@@ -1,4 +1,5 @@
 #include <iostream>
+#include <emscripten/bind.h>
 #include <string.h>
 #include "sha256.h"
 
@@ -33,7 +34,7 @@ std::string get_hash(std::string s) {
 }
 
 
-extern "C" {
+
 int mine(std::string keyword, std::string data, std::string target, std::string mode) {
     // performs the mining, mode 1 -> rotate, mode 2 -> fork
 
@@ -53,23 +54,27 @@ int mine(std::string keyword, std::string data, std::string target, std::string 
     
     output_state(keyword, data, data_hash, total_hash, nonce, target);
 
-    return 0;
+    return nonce;
 }
 
-int main(int argc, char* argv[]) {
-    if (argc <= 4) {
-        std::cout << "Provide 4 args: {keyword} {data} {target} {mining mode}" << std::endl;
-        return EXIT_FAILURE;
-    }
+// int main(int argc, char* argv[]) {
+//     // if (argc <= 4) {
+//     //     std::cout << "Provide 4 args: {keyword} {data} {target} {mining mode}" << std::endl;
+//     //     return EXIT_FAILURE;
+//     // }
     
-    std::string keyword = argv[1];
-    std::string data = argv[2];
-    std::string target = argv[3];
-    std::string mode = argv[4];
+//     std::string keyword = argv[1];
+//     std::string data = argv[2];
+//     std::string target = argv[3];
+//     std::string mode = argv[4];
 
-    int val = mine(keyword, data, target, mode);
+//     int val = mine(keyword, data, target, mode);
     
 
-    return val;
-}
+//     return val;
+// }
+
+
+EMSCRIPTEN_BINDINGS(my_module) {
+        emscripten::function("_mine", &mine);
 }

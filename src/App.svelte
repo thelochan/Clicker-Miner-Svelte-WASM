@@ -1,53 +1,24 @@
 <script>
 
-    import initMiner from '../wasm/mine.wasm'
+    import initMinerWasm from '../wasm/mine.wasm'
+    import miners from '../wasm/mine.js'
     import {onMount} from 'svelte'
     let state;
     let miner = () => {}
 
 
-    let wasmExports = null;
 
-let wasmMemory = new WebAssembly.Memory({initial: 256, maximum: 256});
-
-
-let wasmTable = new WebAssembly.Table({
-    'initial': 1,
-    'maximum': 1,
-    'element': 'anyfunc'
-});
-
-let asmLibraryArg = { 
-    "__handle_stack_overflow": ()=>{},
-    "emscripten_resize_heap": ()=>{},
-    "__lock": ()=>{}, 
-    "__unlock": ()=>{},
-    "memory": wasmMemory, 
-    "table": wasmTable 
-};
-
-
-    var importObject = {
-    imports : {
-    main: function(arg) {
-      console.log(arg);
-      var info = {
-    'env': asmLibraryArg,
-    'wasi_snapshot_preview1': asmLibraryArg
-
-    }
-  }
-}
-    }
+    
 
     onMount(async () =>{
-        // console.log(initMiner)
-        // miner = await initMiner()
-        // miner['constructor']
-        // console.log(miner)
-        initMiner().then((instance ) => {
-  console.log(instance);
-});
+        const mWasn =  miners({
+            locateFile: () =>{
+                return initMinerWasm;
+            }
+        })
+         miner = await mWasn
+        console.log(miner)
+        // miner._mine("hello", "h", "j", 1)
     })
 
     let score= 0;
@@ -69,7 +40,9 @@ let asmLibraryArg = {
     function addToScore(amount) {
         score = score + amount;
         score = score;
-        miner.mine("hello", "h", "21e8", 1)
+        console.log(miner)
+        const nonce = miner._mine("hello", "h", "21e8", "1")
+        console.log(nonce)
     }
 
 

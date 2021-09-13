@@ -5,7 +5,7 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
 import wasm from '@rollup/plugin-wasm'
-
+import url from '@rollup/plugin-url'
 const production = !process.env.ROLLUP_WATCH;
 
 function serve() {
@@ -70,8 +70,12 @@ export default {
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
 		production && terser(),
-		wasm({
-			publicPath: 'build/'
+		// wasm({
+		// 	publicPath: 'build/'
+		// })
+		url({
+			publicPath: '/build/',
+			include: ['**/*.wasm']
 		})
 	],
 	watch: {

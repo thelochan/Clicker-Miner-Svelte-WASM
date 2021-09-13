@@ -14,8 +14,7 @@ cd back into project directory
 
 For WASM:
 cd to WASM folder
-emcc ./main.cpp ./sha256.cpp -I . -o mine.js -DENABLE_WASM=true -s NO_EXIT_RUNTIME=1 -s ALLOW_MEMORY_GROWTH=1 -s "EXPORTED_FUNCTIONS= ['_mine']"       --->(*_mine)
-
+emcc --bind ./main.cpp ./sha256.cpp -s WASM=1 -o ./mine.js -s 'ENVIRONMENT="web"' -s USE_ES6_IMPORT_META=0 -s EXPORT_ES6=1 -s MODULARIZE=1
 
 
 

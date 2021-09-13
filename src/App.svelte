@@ -1,3 +1,80 @@
+<script>
+
+    import initMiner from '../wasm/mine.wasm'
+    import {onMount} from 'svelte'
+    let state;
+    let miner = () => {}
+
+
+    let wasmExports = null;
+
+let wasmMemory = new WebAssembly.Memory({initial: 256, maximum: 256});
+
+
+let wasmTable = new WebAssembly.Table({
+    'initial': 1,
+    'maximum': 1,
+    'element': 'anyfunc'
+});
+
+let asmLibraryArg = { 
+    "__handle_stack_overflow": ()=>{},
+    "emscripten_resize_heap": ()=>{},
+    "__lock": ()=>{}, 
+    "__unlock": ()=>{},
+    "memory": wasmMemory, 
+    "table": wasmTable 
+};
+
+
+    var importObject = {
+    imports : {
+    main: function(arg) {
+      console.log(arg);
+      var info = {
+    'env': asmLibraryArg,
+    'wasi_snapshot_preview1': asmLibraryArg
+
+    }
+  }
+}
+    }
+
+    onMount(async () =>{
+        // console.log(initMiner)
+        // miner = await initMiner()
+        // miner['constructor']
+        // console.log(miner)
+        initMiner().then((instance ) => {
+  console.log(instance);
+});
+    })
+
+    let score= 0;
+    let upgradeCost = 10;
+    let upgrades = 0;
+
+    function buyUpgrade() {
+        if (score >= upgradeCost){
+            score = score - upgradeCost;
+            upgrades = upgrades+1;
+            upgradeCost = Math.round(upgradeCost * 1.5);
+
+            score = score;
+            upgradeCost = upgradeCost;
+            upgrades = upgrades;
+        }
+    }
+
+    function addToScore(amount) {
+        score = score + amount;
+        score = score;
+        miner.mine("hello", "h", "21e8", 1)
+    }
+
+
+</script>
+
 <main>
     <title>Chip Clicker</title>
 
@@ -8,15 +85,15 @@
     <span id="score">0</span> Chips <br>
 
     <br> 
-    <div class = "clickerContainer unselectable"> <img src="./images/chip.png" alt= "CPU" height="256px" width="256px" onClick="addToScore(1)">
+    <div class = "clickerContainer unselectable"> <img src="./images/chip.png" alt= "CPU" height="256px" width="256px" on:click={(amount) => addToScore(amount)}>
     </div>
     </center>
 </div>
 
 
 <div class = "sectionSide">
-    <table class = "upgradeButton" onClick= "buyUpgrade()">
-        <tr> <td id="nameAndCost"> <p>UPGRADES</p> </td></tr>
+    <table class = "upgradeButton" on:click={buyUpgrade}>
+        <tr> <td id="nameAndCost"> <p>UPGRADES</p> {upgrades} </td></tr>
          <tr> <td id="nameAndCost"> <p>Look up</p></td>  </tr>
         <tr> <td id="nameAndCost"> <p>Web RTC</p></td> </tr>
         <tr> <td id="nameAndCost"> <p>Blah</p></td>    </tr>
@@ -30,27 +107,7 @@
 </div>  
 
     <script>
-        var score = 0;
-        var upgradeCost = 10;
-        var upgrades = 0;
-
-        function buyUpgrade() {
-            if (score >= upgradeCost){
-                score = score - upgradeCost;
-                upgrades = upgrades+1;
-                upgradeCost = Math.round(upgradeCost * 1.5);
-
-                document.getElementById("score").innerHTML = score;
-                document.getElementById("upgradeCost").innerHTML = upgradeCost;
-                document.getElementById("upgrades").innerHTML = upgrades;
-            }
-        }
-
-        function addToScore(amount) {
-            score = score + amount;
-            document.getElementById("score").innerHTML = score;
-        }
-
+       
    
 
     </script>

@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@rollup/plugin-wasm": "^5.1.2",
+    "js-sha256": "^0.9.0",
     "sirv-cli": "^1.0.0"
   }
 }

@@ -3,11 +3,16 @@
     import initMinerWasm from '../wasm/mine.wasm'
     import miners from '../wasm/mine.js'
     import {onMount} from 'svelte'
+
+    import {rotations} from "./stores/Rotations.js"
+    import {score} from "./stores/Score.js"
+    import Score from "./Score.svelte"
+    import Miner from './Miner.svelte'
+
     let state;
+    $:source = $rotations[$rotations.length -1] || "clicker-game"
+
     let miner = () => {}
-
-
-
     
 
     onMount(async () =>{
@@ -17,34 +22,22 @@
             }
         })
          miner = await mWasn
-        console.log(miner)
-        // miner._mine("hello", "h", "j", 1)
     })
 
-    let score= 0;
     let upgradeCost = 10;
     let upgrades = 0;
 
-    function buyUpgrade() {
-        if (score >= upgradeCost){
-            score = score - upgradeCost;
-            upgrades = upgrades+1;
-            upgradeCost = Math.round(upgradeCost * 1.5);
+    // function buyUpgrade() {
+    //     if (score >= upgradeCost){
+    //         score = score - upgradeCost;
+    //         upgrades = upgrades+1;
+    //         upgradeCost = Math.round(upgradeCost * 1.5);
 
-            score = score;
-            upgradeCost = upgradeCost;
-            upgrades = upgrades;
-        }
-    }
-
-    function addToScore(amount) {
-        score = score + amount;
-        score = score;
-        console.log(miner)
-        const nonce = miner._mine("hello", "h", "21e8", "1")
-        console.log(nonce)
-    }
-
+    //         score = score;
+    //         upgradeCost = upgradeCost;
+    //         upgrades = upgrades;
+    //     }
+    // }
 
 </script>
 
@@ -52,38 +45,37 @@
     <title>Chip Clicker</title>
 
 <body>
-    <div class = "sectionMain">
-        <center>
-        <div class = "scoreContainer unselectable">
-    <span id="score">0</span> Chips <br>
+    <Miner let:mine>
 
-    <br> 
-    <div class = "clickerContainer unselectable"> <img src="./images/chip.png" alt= "CPU" height="256px" width="256px" on:click={(amount) => addToScore(amount)}>
+        <div class = "sectionMain">
+            <center>
+            <div class = "scoreContainer unselectable">
+    
+                <Score score={$score}/>
+
+        <br> 
+        <div class = "clickerContainer unselectable"> <img src="./images/chip.png" alt= "CPU" height="256px" width="256px" on:click={(amount) => mine(source, "21e8")}>
+        </div>
+        </center>
     </div>
-    </center>
-</div>
 
 
-<div class = "sectionSide">
-    <table class = "upgradeButton" on:click={buyUpgrade}>
-        <tr> <td id="nameAndCost"> <p>UPGRADES</p> {upgrades} </td></tr>
-         <tr> <td id="nameAndCost"> <p>Look up</p></td>  </tr>
-        <tr> <td id="nameAndCost"> <p>Web RTC</p></td> </tr>
-        <tr> <td id="nameAndCost"> <p>Blah</p></td>    </tr>
-        <tr> <td id="nameAndCost"> <p>Blah 2 </p></td>  </tr>
-        <tr> <td id="nameAndCost"> <p>Dark Blah Returns</p></td>  </tr>
-        <tr> <td id="nameAndCost"> <p>GPU Stats</p></td> </tr>
+    <!-- <div class = "sectionSide">
+        <table class = "upgradeButton" on:click={buyUpgrade}>
+            <tr> <td id="nameAndCost"> <p>UPGRADES</p> {upgrades} </td></tr>
+            <tr> <td id="nameAndCost"> <p>Multiplier 1</p></td>  </tr>
+            <tr> <td id="nameAndCost"> <p>Multiplier 2 </p></td> </tr>
+            <tr> <td id="nameAndCost"> <p>Multiplier 3</p></td>    </tr>
+            <tr> <td id="nameAndCost"> <p>Multiplier 4 </p></td>  </tr>
+            <tr> <td id="nameAndCost"> <p>Firstname Lastname</p></td>  </tr>
+            <tr> <td id="nameAndCost"> <p>GPU Stats</p></td> </tr>
+                
             
-        
 
-    </table>
-</div>  
-
-    <script>
-       
-   
-
-    </script>
+        </table>
+    </div>   -->
+    </Miner>
+</body>
 </main>
 
 <style>

@@ -14,6 +14,7 @@ cd back into project directory
 
 For WASM:
 cd to WASM folder
+
 For WASM: cd to WASM folder emcc --bind ./main.cpp ./sha256.cpp -s WASM=1 -o ./mine.js -s 'ENVIRONMENT="web"' -s USE_ES6_IMPORT_META=0 -s EXPORT_ES6=1 -s MODULARIZE=1
 
 emcc -pthread -s PROXY_TO_PTHREAD ./main.cpp ./sha256.cpp -s WASM=1 -o ./mine.js -s 'ENVIRONMENT="worker"' -s USE_ES6_IMPORT_META=0 -s EXPORT_ES6=1 -s MODULARIZE=1 (Threads syntax )

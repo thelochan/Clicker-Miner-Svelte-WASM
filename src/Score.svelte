@@ -4,4 +4,4 @@
 
 </script>
 
-<span id="score">{score}</span> Score <br>
+<span style="color: white;" id="score">{score}</span> Score <br>

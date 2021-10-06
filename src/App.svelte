@@ -8,6 +8,7 @@
     import {score} from "./stores/Score.js"
     import Score from "./Score.svelte"
     import Miner from './Miner.svelte'
+    import Clicker from './Clicker.svelte'
 
     let state;
     $:source = $rotations[$rotations.length -1] || "clicker-game"
@@ -42,9 +43,9 @@
 </script>
 
 <main>
-    <title>Chip Clicker</title>
+    <title>Chip Clicker In Space</title>
 
-<body>
+<body> 
     <Miner let:mine>
 
         <div class = "sectionMain">
@@ -53,10 +54,10 @@
     
                 <Score score={$score}/>
 
-        <br> 
-        <div class = "clickerContainer unselectable"> <img src="./images/chip.png" alt= "CPU" height="256px" width="256px" on:click={(amount) => mine(source, "21e8")}>
-        </div>
-        </center>
+        <br>  
+        <Clicker {mine} {source}/> 
+
+                </center>
     </div>
 
 
@@ -75,13 +76,22 @@
         </table>
     </div>   -->
     </Miner>
+    
 </body>
+
+
+
+
+
 </main>
 
 <style>
 	 .sectionMain {
-            float: left;
-            width: 80%;
+            float: center;
+            height: 500px;
+           background-image: url(../images/space.jpeg)
+        
+           
         }
 
         .sectionSide {
@@ -91,10 +101,10 @@
         }
 
         .scoreContainer {
-            background-color: rgb(238, 238, 238, 0.6);
-            width: 50%;
+            
+            width: 80%;
             padding: 10px;
-            border-radius: 10px;
+            border-radius: 80px;
             font-size: 24px;
             font-weight: bold;
 
@@ -104,12 +114,11 @@
         .clickerContainer img {
             position: relative;
             transition: all .2s ease-in-out;
+            padding: 100px;
             
         }
 
-        .clickerContainer img:hover { transform: scale(1.15);}
-        .clickerContainer img:active { transform: scale(0.9); }
-
+        
   /*   .shopButton {
             background-color: #b5b5b5;
             transition: all 0.2s ease-in-out;

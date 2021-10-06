@@ -2,6 +2,8 @@
 #include <emscripten/bind.h>
 #include <string.h>
 #include "sha256.h"
+#include <thread>
+
 
 //Run Command for output eg: ./main.o neeraj http://lochan.website 21e8 1
 
@@ -37,44 +39,47 @@ std::string get_hash(std::string s) {
 
 int mine(std::string keyword, std::string data, std::string target, std::string mode) {
     // performs the mining, mode 1 -> rotate, mode 2 -> fork
+    int nonce;
+    std::thread thread([&]() {
+         // perform initial total hash
+        std::cout << "ROTATION 0:" << std::endl;
+        nonce = 1;
+        std::string data_hash = get_hash(data);
+        std::string concatenated_str = keyword + data_hash + std::to_string(nonce);
+        std::string total_hash = get_hash(concatenated_str);
 
-    // perform initial total hash
-    std::cout << "ROTATION 0:" << std::endl;
-    int nonce = 1;
-    std::string data_hash = get_hash(data);
-    std::string concatenated_str = keyword + data_hash + std::to_string(nonce);
-    std::string total_hash = get_hash(concatenated_str);
-
-    // perform first rotation of mining
-    while (!is_prefix(target, total_hash)) {
-        nonce += 1;
-        concatenated_str = keyword + data_hash + std::to_string(nonce);
-        total_hash = get_hash(concatenated_str);
-    }
-    
-    output_state(keyword, data, data_hash, total_hash, nonce, target);
-
+        // perform first rotation of mining
+        while (!is_prefix(target, total_hash)) {
+            nonce += 1;
+            concatenated_str = keyword + data_hash + std::to_string(nonce);
+            total_hash = get_hash(concatenated_str);
+        }
+        
+        output_state(keyword, data, data_hash, total_hash, nonce, target);
+    });
+   
+    thread.join();
     return nonce;
 }
 
-// int main(int argc, char* argv[]) {
-//     // if (argc <= 4) {
-//     //     std::cout << "Provide 4 args: {keyword} {data} {target} {mining mode}" << std::endl;
-//     //     return EXIT_FAILURE;
-//     // }
+int main(int argc, char* argv[]) {
+    // if (argc <= 4) {
+    //     std::cout << "Provide 4 args: {keyword} {data} {target} {mining mode}" << std::endl;
+    //     return EXIT_FAILURE;
+    // }
     
-//     std::string keyword = argv[1];
-//     std::string data = argv[2];
-//     std::string target = argv[3];
-//     std::string mode = argv[4];
+    std::string keyword = argv[1];
+    std::string data = argv[2];
+    std::string target = argv[3];
+    std::string mode = argv[4];
 
-//     int val = mine(keyword, data, target, mode);
+    int val = mine(keyword, data, target, mode);
     
 
-//     return val;
-// }
-
-
-EMSCRIPTEN_BINDINGS(my_module) {
-        emscripten::function("_mine", &mine);
+    return val;
 }
+
+
+// EMSCRIPTEN_BINDINGS(my_module) {
+//         emscripten::function("_mine", &mine);
+// }

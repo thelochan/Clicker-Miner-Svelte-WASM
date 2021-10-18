@@ -9,14 +9,31 @@
     import Score from "./Score.svelte"
     import Miner from './Miner.svelte'
     import Clicker from './Clicker.svelte'
+    import {io} from "socket.io-client"
+    
 
     let state;
     $:source = $rotations[$rotations.length -1] || "clicker-game"
 
     let miner = () => {}
-    
+    let socket;
 
     onMount(async () =>{
+        socket = io("localhost:3000");
+        socket.on("connect", (socket)=>{
+            console.log(socket)
+        })
+
+       
+
+        socket.on("disconnect", ()=>{
+            console.log(socket)
+        })
+
+        socket.on("e5c7ffac26fed654fe62045898f55b551a0dc120badf3d116bcd364418f3ec16", (data) =>{
+            console.log("Recieved message for room, ", data)
+        })
+
         const mWasn =  miners({
             locateFile: () =>{
                 return initMinerWasm;
@@ -28,18 +45,7 @@
     let upgradeCost = 10;
     let upgrades = 0;
 
-    // function buyUpgrade() {
-    //     if (score >= upgradeCost){
-    //         score = score - upgradeCost;
-    //         upgrades = upgrades+1;
-    //         upgradeCost = Math.round(upgradeCost * 1.5);
-
-    //         score = score;
-    //         upgradeCost = upgradeCost;
-    //         upgrades = upgrades;
-    //     }
-    // }
-
+ 
 </script>
 
 <main>
@@ -61,21 +67,9 @@
     </div>
 
 
-    <!-- <div class = "sectionSide">
-        <table class = "upgradeButton" on:click={buyUpgrade}>
-            <tr> <td id="nameAndCost"> <p>UPGRADES</p> {upgrades} </td></tr>
-            <tr> <td id="nameAndCost"> <p>Multiplier 1</p></td>  </tr>
-            <tr> <td id="nameAndCost"> <p>Multiplier 2 </p></td> </tr>
-            <tr> <td id="nameAndCost"> <p>Multiplier 3</p></td>    </tr>
-            <tr> <td id="nameAndCost"> <p>Multiplier 4 </p></td>  </tr>
-            <tr> <td id="nameAndCost"> <p>Firstname Lastname</p></td>  </tr>
-            <tr> <td id="nameAndCost"> <p>GPU Stats</p></td> </tr>
-                
-            
+      </Miner>
 
-        </table>
-    </div>   -->
-    </Miner>
+  
     
 </body>
 
@@ -94,11 +88,7 @@
            
         }
 
-        .sectionSide {
-            float: right;
-            width: 10%;
-
-        }
+     
 
         .scoreContainer {
             
@@ -119,18 +109,7 @@
         }
 
         
-  /*   .shopButton {
-            background-color: #b5b5b5;
-            transition: all 0.2s ease-in-out;
-            border-radius: 10px;
-            width: 100%;
-            margin: 10px 0px 10px 0px;
-        }
-
-        .shopButton :hover {
-            background-color: #c7c7c7;
-            transition: all .2s ease-in-out;
-        } */
+  
 
         .shopButton #nameAndCost p {
             margin: 0px;
